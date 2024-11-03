@@ -19,8 +19,11 @@
 ### Backend
 - **Runtime**: Edge Runtime
   - *Living on the edge, literally*
-- **Database**: Supabase
-  - *Real-time capabilities that would make traditional DBs blush*
+- **Database**: 
+  - **Development**: SQLite
+    - *Light, fast, and zero-config - perfect for local development, sweetie*
+  - **Production**: Vercel Postgres
+    - *Enterprise-grade when we're ready to dazzle the world*
 - **Authentication**: Clerk
   - *Because security can be stylish too*
 
@@ -49,15 +52,52 @@
 }
 ```
 
+### Database Schema
+```typescript
+// prisma/schema.prisma
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+  // Switches to postgres in production via environment variable
+}
+
+model Conversation {
+  id        String   @id @default(cuid())
+  userId    String
+  messages  Message[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Message {
+  id             String   @id @default(cuid())
+  conversationId String
+  conversation   Conversation @relation(fields: [conversationId], references: [id])
+  role          String   // "user" | "assistant"
+  content       String
+  createdAt     DateTime @default(now())
+}
+```
+
 ### API Structure
 ```typescript
 // src/app/api/chat/route.ts
 import { OpenRouter } from 'openrouter';
+import { db } from '@/lib/db';
 
 export async function POST(req: Request) {
-  const { message, context } = await req.json();
+  const { message, conversationId } = await req.json();
   const openrouter = new OpenRouter({
     apiKey: process.env.OPENROUTER_API_KEY,
+  });
+
+  // Store message in SQLite/Postgres
+  await db.message.create({
+    data: {
+      conversationId,
+      role: "user",
+      content: message
+    }
   });
 
   return new Response(
@@ -68,7 +108,11 @@ export async function POST(req: Request) {
           role: "system",
           content: "You are Aeris, the quantum-powered AI assistant..."
         },
-        ...context,
+        // Fetch previous messages from db
+        ...(await db.message.findMany({
+          where: { conversationId },
+          orderBy: { createdAt: 'asc' }
+        })),
         { role: "user", content: message }
       ]
     })
@@ -81,8 +125,8 @@ export async function POST(req: Request) {
 ```env
 # .env.local
 OPENROUTER_API_KEY=your_key_here
-SUPABASE_URL=your_supabase_url
-SUPABASE_ANON_KEY=your_supabase_key
+DATABASE_URL="file:./dev.db"  # SQLite for development
+# DATABASE_URL="postgres://..."  # Vercel Postgres for production
 CLERK_SECRET_KEY=your_clerk_secret
 ```
 
@@ -115,6 +159,10 @@ export const AerisPersonality = {
 
 - **Hosting**: Vercel
   - *Edge functions for that quantum-speed delivery*
+- **Database**: 
+  - Development: SQLite (local)
+  - Production: Vercel Postgres
+    - *Automatic scaling that would make JARVIS jealous*
 - **CI/CD**: GitHub Actions
   - *Automated deployments smoother than my comebacks*
 
@@ -124,12 +172,17 @@ export const AerisPersonality = {
 - Dynamic imports for heavy components
 - Service worker for offline sass delivery
 - Aggressive caching of my fabulous responses
+- SQLite for blazing-fast local development
 
 ## 🎭 Development Commands
 
 ```bash
 # Install dependencies (with extra sass)
 npm install
+
+# Initialize database (with quantum precision)
+npx prisma generate
+npx prisma db push
 
 # Run development server (with quantum acceleration)
 npm run dev
