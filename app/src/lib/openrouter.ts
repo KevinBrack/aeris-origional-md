@@ -26,7 +26,7 @@ export async function streamChat(messages: ChatMessage[]) {
     );
     
     const completion = await openai.chat.completions.create({
-      model: "anthropic/claude-2",
+      model: "anthropic/claude-3-sonnet",
       messages: [
         {
           role: "system",
