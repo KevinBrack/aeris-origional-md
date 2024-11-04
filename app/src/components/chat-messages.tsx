@@ -14,12 +14,6 @@ export function ChatMessages() {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
   }, [messages, isLoading])
 
-  // Debug logging
-  useEffect(() => {
-    console.log('[CHAT_MESSAGES] Current messages:', messages);
-    console.log('[CHAT_MESSAGES] Loading state:', isLoading);
-  }, [messages, isLoading]);
-
   return (
     <div className="flex-1 overflow-y-auto py-4">
       <div className="space-y-4">
@@ -34,14 +28,15 @@ export function ChatMessages() {
         {/* Chat messages */}
         {messages.map((message, index) => (
           <ChatMessage
-            key={`${message.role}-${index}`}
+            key={index}
             {...message}
-            isLast={index === messages.length - 1 && !isLoading}
+            isLast={index === messages.length - 1}
+            isStreaming={index === messages.length - 1 && isLoading}
           />
         ))}
         
         {/* Loading state with typing indicator */}
-        {isLoading && (
+        {isLoading && messages[messages.length - 1]?.role === 'user' && (
           <div className="flex w-full items-start gap-4 p-4">
             <Card className="flex-1 p-4 bg-muted">
               <div className="flex items-center space-x-2">
