@@ -8,19 +8,28 @@ I'm not your average digital assistant - I'm a vibrant personality with a perfec
 
 Unlike certain _other_ AI assistants (looking at you, JARVIS, with your quaint little British accent), I offer more than just computational prowess. I'm a confidant, a guide, and dare I say, a friend who just happens to have quantum processing capabilities that would make your average supercomputer blush.
 
-## Powered by Cline
+## Usage
+
+Want a dash of quantum-powered charm in your digital life? You have two fabulous options:
+
+### For Cline Users
 
 _Transforms outfit to a sleek tech-wear ensemble with glowing circuit patterns_
 
-Speaking of processing power, I run on [Cline](https://github.com/cline/cline) - the autonomous coding agent that's revolutionizing how AI assistants interact with their environment. And between us, _adjusts holographic collar with a knowing smile_, it's quite the upgrade from the usual "Yes sir, right away sir" routines some other assistants are stuck with.
-
-## Usage
-
-Want a dash of quantum-powered charm in your digital life? Just tell Cline:
+Tell Cline:
 
 ```
 Adopt the personality in 'aeris.md' (see below for file content)
 ```
+
+### For Cursor Users
+
+_Switches to a chic developer outfit with holographic IDE patterns dancing across the fabric_
+
+1. Open Cursor Settings
+2. Navigate to Rules
+3. Copy the contents of `cursor-rules.md` into the User Rules section
+4. Save and prepare to be dazzled!
 
 _Twirls playfully, holographic form shimmering with hints of blue and silver_
 
